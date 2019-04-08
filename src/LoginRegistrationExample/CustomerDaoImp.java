@@ -1,5 +1,7 @@
 package LoginRegistrationExample;
 
+import java.io.PrintWriter;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -67,4 +69,58 @@ public class CustomerDaoImp implements CustomerDao
 	return c;
 	
  }
+@Override
+public Customer forgot(String User_Id) 
+{
+	 Customer c=new Customer();
+	 boolean login=true;
+	 try
+	 {
+		 System.out.println("getting info from database");
+		 con=MyConnectionProvider.getCon();
+		 ps=con.prepareStatement("SELECT Password FROM LogReg");
+	     //ps.setString(1,Email);
+		
+		 ResultSet rs=ps.executeQuery();
+		 while(rs.next())
+		 {
+			 if((User_Id.equals(rs.getString(1))));
+			 {
+				 System.out.println("login successfull...");
+				 login=false;
+			 }
+			 login=true;
+			 
+		 }
+	 }
+
+    catch (Exception e)
+	 {
+       e.printStackTrace();
+     }
+	return c;
+ }
+
+public int insert(String User_Id,String Password)
+{
+	int status=0;
+	try
+	{
+		System.out.println("getting info from database");
+		 con=MyConnectionProvider.getCon();
+		 ps=con.prepareStatement("UPDATE LogReg set Password=? WHERE User_Id=?");
+		 ps.setString(1, User_Id);
+		 ps.setString(2, Password);
+		
+		 status=ps.executeUpdate();
+		 System.out.println("insert password");
+	}
+	catch(Exception e)
+	{
+		e.printStackTrace();
+	}
+	return status;
 }
+	 
+}
+

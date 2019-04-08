@@ -2,6 +2,7 @@ package LoginRegistrationExample;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.ResultSet;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -9,6 +10,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.catalina.filters.RequestDumperFilter;
 
 @WebServlet("/LoginRegister")
 public class LoginRegister extends HttpServlet
@@ -30,8 +33,9 @@ public class LoginRegister extends HttpServlet
 		
 		System.out.println(c.getEmail()+c.getPassword()+c.getUser_Id());////////
 		
-		if(submitType.equals("Login") && c!=null && c.getEmail()!=null)
+		if(submitType.equals("Login") && c!=null && c.getEmail()!=null && c.getPassword()!=null)
 		{
+			
 			System.out.println("in login");
 		    request.setAttribute("message",c.getEmail());
 		    RequestDispatcher rd=request.getRequestDispatcher("welcome.jsp");
@@ -53,15 +57,27 @@ public class LoginRegister extends HttpServlet
 		    request.getRequestDispatcher("login.jsp").forward(request, response);
 		    System.out.println("reg successfully");
 		}
-		else if(submitType.equals("forget Password"))
+		else if(submitType.equals("forgot"))
 		{
+//			c.setPassword(Password);
+//			c.setEmail(Email);
+			if(User_Id.equals(cd.forgot(User_Id))) {
+		cd.insert(User_Id, Conform_Password);	
+			    
+			System.out.println("in forgot password");
+		    request.setAttribute("message",c.getUser_Id());
+		   // cd.insert(c);
+		    RequestDispatcher rd=request.getRequestDispatcher("login.jsp");
+		    rd.forward(request, response);}else {
+		    	RequestDispatcher rd=request.getRequestDispatcher("welcome.jsp");
+		    	rd.forward(request, response);
+		    }
 			
+        }
+		else {
+			request.setAttribute("message","data not found");
+		    RequestDispatcher rd=request.getRequestDispatcher("login.jsp");
+		    rd.forward(request, response);
 		}
-		else
-		{
-			request.setAttribute("message","Data not found,click on New Registration");
-		    request.getRequestDispatcher("login.jsp").forward(request, response);
-		}
-	}
-
+}
 }
